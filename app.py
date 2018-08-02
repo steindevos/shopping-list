@@ -39,8 +39,16 @@ def update_task(task_id):
     tasks.update( {"_id": ObjectId(task_id)}, request.form.to_dict())
     return redirect(url_for("get_tasks"))
     
-@app.route("/delete_task/<task_id>")
-def delete_task(task_id):
+@app.route("/confirm_delete_task/<task_id>")
+def confirm_delete_task(task_id):
+    the_task = mongo.db.tasks.find_one({"_id": ObjectId(task_id)})
+    return render_template("confirmdelete.html", task=the_task)
+    
+@app.route("/delete_task/", methods=["POST"])
+def delete_task():
+    task_id = request.form['task_id']
+    print("----------------------------------------------------------------------------------------------------------------------------------------")
+    print(task_id)
     mongo.db.tasks.remove({"_id":ObjectId(task_id)})
     return redirect(url_for("get_tasks"))
 
